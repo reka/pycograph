@@ -13,10 +13,10 @@ Pycograph creates a [RedisGraph](https://oss.redislabs.com/redisgraph/) model of
 
 ## Getting Started
 
-Install Pycograph from GitHub:
+Install Pycograph from PyPI:
 
 ```
-pip install git+https://github.com/reka/pycograph.git
+pip install pycograph
 ```
 
 Start a Redis instance with the RedisGraph module and RedisInsight. E.g. via Docker containers:
