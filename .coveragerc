@@ -1,0 +1,7 @@
+[run]
+command_line=-m pytest
+source=pycograph
+branch=True
+
+[json]
+pretty_print=True

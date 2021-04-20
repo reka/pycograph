@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# This is the suggested pre-commit hook.
+#
+# Suggested usage: add a symbolic link to it.
+#
+# cd .git/hooks
+# ln -s ../../devtools/git-hooks/pre-commit
+
+black .
+mypy pycograph
+make cov
