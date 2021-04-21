@@ -19,6 +19,12 @@ Pycograph creates a [RedisGraph](https://oss.redislabs.com/redisgraph/) model of
 
 ## Getting Started
 
+Requirements:
+
+* Python 3.8 or higher
+* a Redis instance with the RedisGraph module (local, remote or via Docker)
+* not strictly necessary, but recommended: RedisInsight for visualizing the query results
+
 Install Pycograph from PyPI:
 
 ```
@@ -93,7 +99,7 @@ The following imports will be ignored by Pycograph:
 
 ## How Does It Work?
 
-![flow of loading code: source => RedisGraph](https://raw.githubusercontent.com/reka/pycograph/main/resources/pycograph_architecture.png)
+![Pycograph architecture](https://raw.githubusercontent.com/reka/pycograph/main/resources/pycograph_architecture.png)
 
 ### Libraries used:
 
