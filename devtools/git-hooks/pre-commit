@@ -10,3 +10,6 @@
 black .
 mypy pycograph
 make cov
+
+# Keep devtools/requirements.txt in sync
+poetry export -f requirements.txt --output devtools/requirements.txt --dev

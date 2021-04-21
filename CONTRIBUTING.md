@@ -2,7 +2,7 @@
 
 Thanks a lot for contributing to Pycograph.
 
-## Environment Setup
+## Environment Setup: Redis
 
 You'll need:
 
@@ -32,6 +32,16 @@ Now, you can:
 * execute the `pycograph` command
 * run the tests with `pytest`
 * format the code with `black .`
+
+## Alternative Virtual Environments
+
+If you prefer to use another tool for virtual environments, you can install the dependencies via:
+
+```
+pip install -r devtools/requirements.txt
+```
+
+`devtools/requirements.txt` is generated via `poetry export`. It contains all the dev dependencies as well. Its purpose is to make development without Poetry easier. The "source of truth" regarding requirements is `pyproject.toml`
 
 ## Tests
 
