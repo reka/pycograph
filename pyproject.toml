@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pycograph"
-version = "0.2.2"
-description = ""
+version = "0.2.3"
+description = "Create a RedisGraph model of a Python code base."
 authors = ["reka <reka@hey.com>"]
 license = "BSD-3-Clause"
 

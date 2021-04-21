@@ -1,6 +1,12 @@
 # Pycograph
 
-![Pycograph](resources/pycograph_logo.png)
+[![PyPI version](https://badge.fury.io/py/pycograph.svg)](https://badge.fury.io/py/pycograph)
+![Black](https://img.shields.io/badge/code%20style-black-000000.svg)
+
+![Pycograph](https://github.com/reka/pycograph/raw/main/resources/pycograph_logo.png)
+
+Homepage: [https://pycograph.com/](https://pycograph.com/)  
+PyPI: [https://pypi.org/project/pycograph/](https://pypi.org/project/pycograph/)
 
 **Explore your Python code with graph queries**
 
@@ -9,7 +15,7 @@ Pycograph creates a [RedisGraph](https://oss.redislabs.com/redisgraph/) model of
 * query it with [Cypher](https://oss.redislabs.com/redisgraph/commands/)
 * visualize it with [RedisInsight](https://redislabs.com/redis-enterprise/redis-insight/)
 
-![sample Redis Insight result](resources/sample_redis_insight.png)
+![sample Redis Insight result](https://github.com/reka/pycograph/raw/main/resources/sample_redis_insight.png)
 
 ## Getting Started
 
@@ -43,6 +49,8 @@ Run a query in RedisInsight. E.g.
 ```
 GRAPH.QUERY "your-project" "MATCH (n) return n"
 ```
+
+To see some more advanced queries, check out the [examples](https://pycograph.com/examples/) at pycograph.com
 
 ## Options
 
@@ -84,7 +92,7 @@ The following imports will be ignored by Pycograph:
 
 ## How Does It Work?
 
-![flow of loading code: source => RedisGraph](resources/pycograph_architecture.png)
+![flow of loading code: source => RedisGraph](https://raw.githubusercontent.com/reka/pycograph/main/resources/pycograph_architecture.png)
 
 ### Libraries used:
 
@@ -95,4 +103,4 @@ The following imports will be ignored by Pycograph:
 
 ## Contributing
 
-see the [Contributing guide](CONTRIBUTING.md)
+see the [Contributing guide](https://github.com/reka/pycograph/blob/main/CONTRIBUTING.md)
