@@ -89,6 +89,7 @@ The following imports will be ignored by Pycograph:
 ### Other Known Limitations
 
 * No support for `.py` files containing Jinja templates (e.g. cookiecutter)
+* Inner functions are ignored.
 
 ## How Does It Work?
 

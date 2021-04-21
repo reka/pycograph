@@ -45,7 +45,7 @@ def populate_graph(graph_name: str, result: ParseResult) -> Graph:
 def add_to_graph(thing: ObjectWithContext, graph: Graph) -> Node:
     thing_node = Node(
         label=thing.label(),
-        properties=thing.dict(include=thing.node_properties()),
+        properties=thing.node_properties(),
     )
     graph.add_node(thing_node)
     return thing_node

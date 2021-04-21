@@ -3,7 +3,7 @@
 They contain contextual information and methods with logic.
 """
 
-from abc import ABC
+from abc import ABC, abstractmethod
 import logging
 import os
 from typing import Any, Dict, List, Optional
@@ -29,6 +29,13 @@ logger = logging.getLogger(__name__)
 
 
 class Relationship(BaseModel, ABC):
+    """Base class for all relationship classes.
+
+    These classes will be converted into the graph's edges.
+    The relationships are contained by the source object.
+    The destination object's full name is stored as a property in the relationship.
+    """
+
     name: str
     destination_full_name: str
 
@@ -37,10 +44,14 @@ class Relationship(BaseModel, ABC):
 
 
 class ContainsRelationship(Relationship):
+    """Contains relationship between two objects."""
+
     name: str = "contains"
 
 
 class CallsRelationship(Relationship):
+    """Calls relationship between two objects."""
+
     name: str = "calls"
     syntax_element: CallSyntaxElement
 
@@ -52,6 +63,12 @@ class CallsRelationship(Relationship):
 
 
 class ResolvedImportRelationship(Relationship):
+    """Import relationship between two objects.
+
+    A ResolvedImportRelationship object gets created during import resolution,
+    when we've figured out the full name of the imported object.
+    """
+
     name: str = "imports"
     import_element: ImportSyntaxElement
 
@@ -68,6 +85,10 @@ class ResolvedImportRelationship(Relationship):
 
 
 class ObjectWithContext(BaseModel, ABC):
+    """Base class for all objects.
+
+    These will become the graph's nodes.
+    """
     name: str
     full_name: str = ""
     names_in_scope: dict = {}
@@ -78,15 +99,44 @@ class ObjectWithContext(BaseModel, ABC):
     calls: List[CallSyntaxElement] = []
     contained_objects: List["ObjectWithContext"] = []
 
+    @abstractmethod
     def label(self) -> str:
-        return "other"
+        """The object's label showing its type.
 
-    def node_properties(self):
+        This will be the node's label in the graph model.
+        """
+        pass
+
+    def node_properties(self) -> Dict[str, Any]:
+        """Properties that will be stored in the RedisGraph node.
+
+        :return: A dictionary containing the properties for the graph node.
+        :rtype: Dict[str, Any]
+        """
+        return self.dict(include=self._node_property_keys())
+
+    def _node_property_keys(self) -> set:
+        """The property keys that will be used by the node.
+
+        :return: A set with the relevant property names.
+        :rtype: set
+        """
+        relevant_keys = {"name", "full_name", "is_test_object"}
         if self.is_test_object and settings.determine_test_types:
-            return {"name", "full_name", "is_test_object", "test_type"}
-        return {"name", "full_name", "is_test_object"}
+            relevant_keys.add("test_type")
+        return relevant_keys
 
-    def parse_syntax_elements(self, syntax_elements: List[SyntaxElement]):
+    def parse_syntax_elements(
+        self, syntax_elements: List[SyntaxElement]
+    ) -> Dict[str, "ObjectWithContext"]:
+        """Parse the syntax elements in the context of this object.
+
+        If the syntax element defines an object => Store it and add it to the result dictionary.
+        If the syntax element represents a relationship => Store it for further processing.
+
+        :return: All the syntax elements that represent an object.
+        :rtype: Dict[str, ObjectWithContext]
+        """
         result = {}
         for syntax_element in syntax_elements:
             defined_object: Optional[ObjectWithContext] = None
@@ -109,9 +159,12 @@ class ObjectWithContext(BaseModel, ABC):
                     name=syntax_element.name,
                 )
             if defined_object:
-                self.add_content(defined_object)
+                self.add_to_content(defined_object)
                 result[defined_object.full_name] = defined_object
                 self.names_in_scope[defined_object.name] = defined_object.full_name
+
+                # BlockSyntaxElements contain further syntax elements.
+                # We need to parse these as well.
                 if isinstance(syntax_element, BlockSyntaxElement):
                     result.update(
                         defined_object.parse_syntax_elements(
@@ -120,44 +173,78 @@ class ObjectWithContext(BaseModel, ABC):
                     )
         return result
 
-    def add_content(self, thing: "ObjectWithContext"):
-        thing.initialize(self)
+    def add_to_content(self, obj: "ObjectWithContext") -> None:
+        """Add a contained object.
+
+        :param obj: The contained object.
+        :type obj: ObjectWithContext
+        """
+        obj.update_properties_from_owner(self)
         contains_rel = ContainsRelationship(
-            destination_full_name=thing.full_name,
+            destination_full_name=obj.full_name,
         )
         self.relationships.append(contains_rel)
-        self.contained_objects.append(thing)
+        self.contained_objects.append(obj)
 
-    def initialize(self, owner: "ObjectWithContext"):
+    def update_properties_from_owner(self, owner: "ObjectWithContext") -> None:
+        """Update the properties that the object inherits from its owner.
+
+        Following the aggregate pattern,
+        an object doesn't know its owner,
+        but the owner knows its contained object.
+        We use this method to update the properties that come from the owner.
+
+        :param owner: [description]
+        :type owner: ObjectWithContext
+        """
         self.full_name = f"{owner.full_name}.{self.name}"
         self.is_test_object = owner.is_test_object
         self.test_type = owner.test_type
 
-    def update_names_in_scope_for_content(self):
+    def update_names_in_scope_for_content(self) -> None:
+        """Pass the names in scope to all contained objects recursively."""
         for thing in self.contained_objects:
             thing.names_in_scope.update(self.names_in_scope)
             thing.update_names_in_scope_for_content()
 
-    def resolve_calls(self, imported_names):
+    def resolve_calls(self, imported_names: Dict[str, str]) -> None:
+        """Resolve all call definitions recursively.
+
+        :param imported_names: A project-level dict showing which object an imported name refers to.
+        :type imported_names: Dict[str, str]
+        """
         for call in self.calls:
-            if call.what_reference_name not in self.names_in_scope.keys():
-                continue
-            called_full_name = self.names_in_scope[call.what_reference_name]
-            if call.called_attribute:
-                what_full_name = f"{called_full_name}.{call.called_attribute}"
-            else:
-                what_full_name = called_full_name
-            if what_full_name in imported_names.keys():
-                what_full_name = imported_names[what_full_name]
-            calls_rel = CallsRelationship(
-                destination_full_name=what_full_name, syntax_element=call
-            )
-            self.relationships.append(calls_rel)
+            self.resolve_call(call, imported_names)
         for thing in self.contained_objects:
             thing.resolve_calls(imported_names)
 
+    def resolve_call(
+        self, call: CallSyntaxElement, imported_names: Dict[str, str]
+    ) -> None:
+        """Resolve a call and determine which object it refers to.
+
+        :param call: A syntax element defining a calls relationship.
+        :type call: CallSyntaxElement
+        :param imported_names: A project-level dict showing which object an imported name refers to.
+        :type imported_names: Dict[str, str]
+        """
+        if call.what_reference_name not in self.names_in_scope.keys():
+            return
+        called_full_name = self.names_in_scope[call.what_reference_name]
+        if call.called_attribute:
+            what_full_name = f"{called_full_name}.{call.called_attribute}"
+        else:
+            what_full_name = called_full_name
+        if what_full_name in imported_names.keys():
+            what_full_name = imported_names[what_full_name]
+        calls_rel = CallsRelationship(
+            destination_full_name=what_full_name, syntax_element=call
+        )
+        self.relationships.append(calls_rel)
+
 
 class FunctionWithContext(ObjectWithContext):
+    """An object representing a function."""
     def label(self) -> str:
         if self.is_test_object:
             if self.name.startswith("test_"):
@@ -169,8 +256,9 @@ class FunctionWithContext(ObjectWithContext):
 
 
 class ClassWithContext(ObjectWithContext):
-    def initialize(self, owner: "ObjectWithContext"):
-        super().initialize(owner)
+    """An object representing a class."""
+    def update_properties_from_owner(self, owner: "ObjectWithContext"):
+        super().update_properties_from_owner(owner)
         self.names_in_scope = {
             "self": self.full_name,
             "class": self.full_name,
@@ -184,6 +272,7 @@ class ClassWithContext(ObjectWithContext):
 
 
 class ConstantWithContext(ObjectWithContext):
+    """An object representing a constant."""
     def label(self) -> str:
         if self.is_test_object:
             return "test_constant"
@@ -192,6 +281,11 @@ class ConstantWithContext(ObjectWithContext):
 
 
 class ModuleWithContext(ObjectWithContext):
+    """An object representing a module.
+    
+    They are created by the PythonProject,
+    while it's parsing the file system and detecting .py files.
+    """
     file_path: str
     content: str = ""
 
@@ -221,6 +315,11 @@ class ModuleWithContext(ObjectWithContext):
 
 
 class PackageWithContext(ObjectWithContext):
+    """An object representing a package.
+    
+    They are created by the PythonProject,
+    while it's parsing the file system and detecting directories containing .py files.
+    """
     dir_path: str
 
     def label(self) -> str:
@@ -241,14 +340,27 @@ class PackageWithContext(ObjectWithContext):
             self.test_type = full_name_parts[1]
 
     def add_module(self, name: str) -> ModuleWithContext:
+        """Create a module contained by this package.
+
+        :param name: The name of the module.
+        :type name: str
+        :return: The module created.
+        :rtype: ModuleWithContext
+        """
         module_path = os.path.join(self.dir_path, f"{name}.py")
         modu = ModuleWithContext(
             name=name,
             file_path=module_path,
         )
-        self.add_content(modu)
+        self.add_to_content(modu)
         return modu
 
 
 class ParseResult(BaseModel):
+    """The result of parsing a Python project.
+
+    This will be used to create the graph model.
+    The objects dict contains the nodes.
+    The edges are modelled as relationships list of the source object.
+    """
     objects: Dict[str, ObjectWithContext] = {}

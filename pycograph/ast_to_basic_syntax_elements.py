@@ -14,6 +14,19 @@ from pycograph.schemas.basic_syntax_elements import (
 
 
 def parse_module(content: str, full_name: str) -> List[SyntaxElement]:
+    """Parse the content of a Python module into a list os basic syntax elements.
+
+    This function returns only a list of basic syntax elements,
+    which will be stored in the module.
+    In later steps, they will be converted into objects with context and relationships.
+
+    :param content: The module's content as text.
+    :type content: str
+    :param full_name: The module's full name.
+    :type full_name: str
+    :return: A list of basic syntax elements.
+    :rtype: List[SyntaxElement]
+    """
     result = []
     module = ast.parse(content, full_name, type_comments=True)
     for ast_object in module.body:
@@ -22,6 +35,13 @@ def parse_module(content: str, full_name: str) -> List[SyntaxElement]:
 
 
 def parse_ast_object(ast_object: ast.AST) -> List[SyntaxElement]:
+    """Parse an abstract syntax tree object depending on its type.
+
+    :param ast_object: An abstract syntax tree object.
+    :type ast_object: ast.AST
+    :return: A list of basic syntax elements.
+    :rtype: List[SyntaxElement]
+    """
     if type(ast_object) == ast.ImportFrom:
         return parse_import_from(ast_object)  # type: ignore
     if type(ast_object) == ast.Import:
@@ -45,7 +65,14 @@ def parse_ast_object(ast_object: ast.AST) -> List[SyntaxElement]:
     return []
 
 
-def parse_import_from(ast_import_from: ast.ImportFrom):
+def parse_import_from(ast_import_from: ast.ImportFrom) -> List[ImportFromSyntaxElement]:
+    """Convert an ImportFrom ast object into a list of ImportFromSyntaxElements.
+
+    :param ast_import_from: An ImportFrom ast object representing one or more imports.
+    :type ast_import_from: ast.ImportFrom
+    :return: A list where each member represents exactly 1 imports relationship.
+    :rtype: List[ImportFromSyntaxElement]
+    """
     result = []
     for import_from_name in ast_import_from.names:
         import_relationship = ImportFromSyntaxElement(
@@ -58,7 +85,14 @@ def parse_import_from(ast_import_from: ast.ImportFrom):
     return result
 
 
-def parse_import(ast_import: ast.Import):
+def parse_import(ast_import: ast.Import) -> List[ImportSyntaxElement]:
+    """Convert an Import ast object into a list of ImportSyntaxElements.
+
+    :param ast_import: An Import ast object representing one or more imports.
+    :type ast_import: ast.Import
+    :return: A list where each member represents exactly 1 imports relationship.
+    :rtype: List[ImportSyntaxElement]
+    """
     result = []
     for import_from_name in ast_import.names:
         import_relationship = ImportSyntaxElement(
@@ -70,6 +104,16 @@ def parse_import(ast_import: ast.Import):
 
 
 def parse_function(ast_function_def: ast.FunctionDef) -> FunctionDefSyntaxElement:
+    """Parse a function definition and its content into a basic syntax element.
+
+    The body of the function is parsed into a list `SyntaxElement`s
+    and stored in the `FunctionDefSyntaxElement`.
+
+    :param ast_function_def: An function including its content.
+    :type ast_function_def: ast.FunctionDef
+    :return: A basic syntax element for function definition.
+    :rtype: FunctionDefSyntaxElement
+    """
     function_def = FunctionDefSyntaxElement(name=ast_function_def.name)
     for line in ast.walk(ast_function_def):
         if type(line) != ast.FunctionDef:
@@ -78,6 +122,13 @@ def parse_function(ast_function_def: ast.FunctionDef) -> FunctionDefSyntaxElemen
 
 
 def parse_class(ast_class: ast.ClassDef) -> ClassDefSyntaxElement:
+    """Parse a class definition and its content into a basic syntax element.
+
+    :param ast_class: A class including its content.
+    :type ast_class: ast.ClassDef
+    :return: A basic syntax element for class definition.
+    :rtype: ClassDefSyntaxElement
+    """
     class_def = ClassDefSyntaxElement(name=ast_class.name)
 
     # Here, we don't use walk,
