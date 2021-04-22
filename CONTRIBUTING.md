@@ -41,6 +41,12 @@ If you prefer to use another tool for virtual environments, you can install the 
 pip install -r devtools/requirements.txt
 ```
 
+You also need to install the project itself with:
+
+```
+pip install .
+```
+
 `devtools/requirements.txt` is generated via `poetry export`. It contains all the dev dependencies as well. Its purpose is to make development without Poetry easier. The "source of truth" regarding requirements is `pyproject.toml`
 
 ## Tests
