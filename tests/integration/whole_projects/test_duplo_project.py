@@ -1,6 +1,7 @@
 import os
 
 from pycograph import pycograph
+from tests.integration.whole_projects.helpers import find_node_with_full_name
 
 
 def test_duplo_project(test_data_dir, no_graph_commit):
@@ -10,11 +11,11 @@ def test_duplo_project(test_data_dir, no_graph_commit):
 
     assert result.name == "duplo-project"
     assert len(result.nodes) == 8
-    # assert len(result.edges) == 14
+    assert len(result.edges) == 14
 
     nodes = list(result.nodes.values())
 
-    duplo_package_node = nodes[0]
+    duplo_package_node = find_node_with_full_name("duplo", nodes)
     assert duplo_package_node.label == "package"
     assert duplo_package_node.properties == {
         "name": "duplo",
@@ -22,7 +23,7 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    content_module_node = nodes[1]
+    content_module_node = find_node_with_full_name("duplo.content", nodes)
     assert content_module_node.label == "module"
     assert content_module_node.properties == {
         "name": "content",
@@ -30,7 +31,7 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    main_module_node = nodes[2]
+    main_module_node = find_node_with_full_name("duplo.main", nodes)
     assert main_module_node.label == "module"
     assert main_module_node.properties == {
         "name": "main",
@@ -38,7 +39,7 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    answer_constant_node = nodes[3]
+    answer_constant_node = find_node_with_full_name("duplo.content.ANSWER", nodes)
     assert answer_constant_node.label == "constant"
     assert answer_constant_node.properties == {
         "name": "ANSWER",
@@ -46,7 +47,7 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    publ_function_node = nodes[4]
+    publ_function_node = find_node_with_full_name("duplo.content.publ", nodes)
     assert publ_function_node.label == "function"
     assert publ_function_node.properties == {
         "name": "publ",
@@ -54,7 +55,7 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    priv_function_node = nodes[5]
+    priv_function_node = find_node_with_full_name("duplo.content.priv", nodes)
     assert priv_function_node.label == "function"
     assert priv_function_node.properties == {
         "name": "priv",
@@ -62,7 +63,7 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    dummy_class_node = nodes[6]
+    dummy_class_node = find_node_with_full_name("duplo.content.Dummy", nodes)
     assert dummy_class_node.label == "class"
     assert dummy_class_node.properties == {
         "name": "Dummy",
@@ -70,7 +71,7 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    bla_function_node = nodes[7]
+    bla_function_node = find_node_with_full_name("duplo.main.bla", nodes)
     assert bla_function_node.label == "function"
     assert bla_function_node.properties == {
         "name": "bla",

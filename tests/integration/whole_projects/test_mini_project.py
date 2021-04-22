@@ -1,6 +1,7 @@
 import os
 
 from pycograph import pycograph
+from tests.integration.whole_projects.helpers import find_node_with_full_name
 
 
 def test_mini_project(test_data_dir, no_graph_commit):
@@ -14,7 +15,7 @@ def test_mini_project(test_data_dir, no_graph_commit):
 
     nodes = list(result.nodes.values())
 
-    mini_package_node = nodes[0]
+    mini_package_node = find_node_with_full_name("mini", nodes)
     assert mini_package_node.label == "package"
     assert mini_package_node.properties == {
         "name": "mini",
@@ -22,7 +23,7 @@ def test_mini_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    example_module_node = nodes[1]
+    example_module_node = find_node_with_full_name("mini.example", nodes)
     assert example_module_node.label == "module"
     assert example_module_node.properties == {
         "name": "example",
@@ -30,7 +31,7 @@ def test_mini_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    answer_function_node = nodes[2]
+    answer_function_node = find_node_with_full_name("mini.example.answer", nodes)
     assert answer_function_node.label == "function"
     assert answer_function_node.properties == {
         "name": "answer",
