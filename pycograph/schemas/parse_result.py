@@ -6,6 +6,7 @@ They contain contextual information and methods with logic.
 from abc import ABC, abstractmethod
 import logging
 import os
+from pycograph.exceptions import ModuleWithInvalidContentException
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel
@@ -89,6 +90,7 @@ class ObjectWithContext(BaseModel, ABC):
 
     These will become the graph's nodes.
     """
+
     name: str
     full_name: str = ""
     names_in_scope: dict = {}
@@ -126,7 +128,7 @@ class ObjectWithContext(BaseModel, ABC):
             relevant_keys.add("test_type")
         return relevant_keys
 
-    def parse_syntax_elements(
+    def _parse_syntax_elements(
         self, syntax_elements: List[SyntaxElement]
     ) -> Dict[str, "ObjectWithContext"]:
         """Parse the syntax elements in the context of this object.
@@ -159,7 +161,7 @@ class ObjectWithContext(BaseModel, ABC):
                     name=syntax_element.name,
                 )
             if defined_object:
-                self.add_to_content(defined_object)
+                self._add_to_content(defined_object)
                 result[defined_object.full_name] = defined_object
                 self.names_in_scope[defined_object.name] = defined_object.full_name
 
@@ -167,26 +169,26 @@ class ObjectWithContext(BaseModel, ABC):
                 # We need to parse these as well.
                 if isinstance(syntax_element, BlockSyntaxElement):
                     result.update(
-                        defined_object.parse_syntax_elements(
+                        defined_object._parse_syntax_elements(
                             syntax_element.syntax_elements
                         )
                     )
         return result
 
-    def add_to_content(self, obj: "ObjectWithContext") -> None:
+    def _add_to_content(self, obj: "ObjectWithContext") -> None:
         """Add a contained object.
 
         :param obj: The contained object.
         :type obj: ObjectWithContext
         """
-        obj.update_properties_from_owner(self)
+        obj._update_properties_from_owner(self)
         contains_rel = ContainsRelationship(
             destination_full_name=obj.full_name,
         )
         self.relationships.append(contains_rel)
         self.contained_objects.append(obj)
 
-    def update_properties_from_owner(self, owner: "ObjectWithContext") -> None:
+    def _update_properties_from_owner(self, owner: "ObjectWithContext") -> None:
         """Update the properties that the object inherits from its owner.
 
         Following the aggregate pattern,
@@ -214,11 +216,11 @@ class ObjectWithContext(BaseModel, ABC):
         :type imported_names: Dict[str, str]
         """
         for call in self.calls:
-            self.resolve_call(call, imported_names)
+            self._resolve_call(call, imported_names)
         for thing in self.contained_objects:
             thing.resolve_calls(imported_names)
 
-    def resolve_call(
+    def _resolve_call(
         self, call: CallSyntaxElement, imported_names: Dict[str, str]
     ) -> None:
         """Resolve a call and determine which object it refers to.
@@ -245,6 +247,7 @@ class ObjectWithContext(BaseModel, ABC):
 
 class FunctionWithContext(ObjectWithContext):
     """An object representing a function."""
+
     def label(self) -> str:
         if self.is_test_object:
             if self.name.startswith("test_"):
@@ -257,8 +260,9 @@ class FunctionWithContext(ObjectWithContext):
 
 class ClassWithContext(ObjectWithContext):
     """An object representing a class."""
-    def update_properties_from_owner(self, owner: "ObjectWithContext"):
-        super().update_properties_from_owner(owner)
+
+    def _update_properties_from_owner(self, owner: "ObjectWithContext"):
+        super()._update_properties_from_owner(owner)
         self.names_in_scope = {
             "self": self.full_name,
             "class": self.full_name,
@@ -273,6 +277,7 @@ class ClassWithContext(ObjectWithContext):
 
 class ConstantWithContext(ObjectWithContext):
     """An object representing a constant."""
+
     def label(self) -> str:
         if self.is_test_object:
             return "test_constant"
@@ -282,10 +287,11 @@ class ConstantWithContext(ObjectWithContext):
 
 class ModuleWithContext(ObjectWithContext):
     """An object representing a module.
-    
+
     They are created by the PythonProject,
     while it's parsing the file system and detecting .py files.
     """
+
     file_path: str
     content: str = ""
 
@@ -297,17 +303,26 @@ class ModuleWithContext(ObjectWithContext):
         else:
             return "module"
 
-    def parse(self):
-        self.read_content()
+    def parse(self) -> Dict[str, ObjectWithContext]:
+        """Parse the content of a module.
+
+        A dictionary of objects and their unique full names is returned
+        and stored in the caller (the project).
+        All parsed elements are stored in the module itself as well.
+
+        :raises ModuleWithInvalidContentException: If the module contains invalid syntax.
+        :return: A dictionary of objects and their unique full names.
+        :rtype: Dict[str, ObjectWithContext]
+        """
+        self._read_content()
         try:
             syntax_elements = parse_module(self.content, self.full_name)
-            result = self.parse_syntax_elements(syntax_elements)
+            result = self._parse_syntax_elements(syntax_elements)
             return result
-        except SyntaxError:
-            logger.error(f"Skipped module {self.full_name} because of syntax error.")
-            return []
+        except SyntaxError as e:
+            raise ModuleWithInvalidContentException from e
 
-    def read_content(self):
+    def _read_content(self):
         if self.content:
             return
         with open(self.file_path, "r") as f:
@@ -316,10 +331,11 @@ class ModuleWithContext(ObjectWithContext):
 
 class PackageWithContext(ObjectWithContext):
     """An object representing a package.
-    
+
     They are created by the PythonProject,
     while it's parsing the file system and detecting directories containing .py files.
     """
+
     dir_path: str
 
     def label(self) -> str:
@@ -352,7 +368,7 @@ class PackageWithContext(ObjectWithContext):
             name=name,
             file_path=module_path,
         )
-        self.add_to_content(modu)
+        self._add_to_content(modu)
         return modu
 
 
@@ -363,4 +379,5 @@ class ParseResult(BaseModel):
     The objects dict contains the nodes.
     The edges are modelled as relationships list of the source object.
     """
+
     objects: Dict[str, ObjectWithContext] = {}

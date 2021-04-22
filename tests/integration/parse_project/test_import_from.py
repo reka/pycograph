@@ -18,9 +18,8 @@ def do_stuff(nr):
     )
 
     project = PythonProject(root_dir_path="dummy")
-    project.modules = [logic_module, importer_module]
-    project._add_object(logic_module)
-    project._add_object(importer_module)
+    project._add_module(logic_module)
+    project._add_module(importer_module)
 
     project.parse()
 
@@ -55,9 +54,8 @@ def do_stuff(nr):
     )
 
     project = PythonProject(root_dir_path="dummy")
-    project.modules = [logic_module, importer_module]
-    project._add_object(logic_module)
-    project._add_object(importer_module)
+    project._add_module(logic_module)
+    project._add_module(importer_module)
 
     project.parse()
 
@@ -91,10 +89,9 @@ def do_stuff(nr):
     )
 
     project = PythonProject(root_dir_path="dummy")
-    project.modules = [logic_module, first_importer_module, second_importer_module]
-    project._add_object(logic_module)
-    project._add_object(first_importer_module)
-    project._add_object(second_importer_module)
+    project._add_module(logic_module)
+    project._add_module(first_importer_module)
+    project._add_module(second_importer_module)
 
     project.parse()
 

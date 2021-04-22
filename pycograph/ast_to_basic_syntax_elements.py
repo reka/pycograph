@@ -1,6 +1,6 @@
 """Parse the abstract syntax tree of a Python project into basic syntax element objects."""
 import ast
-from typing import List, Union
+from typing import List, Optional
 
 from pycograph.schemas.basic_syntax_elements import (
     CallSyntaxElement,
@@ -142,6 +142,13 @@ def parse_class(ast_class: ast.ClassDef) -> ClassDefSyntaxElement:
 
 
 def parse_ast_assign(ast_assign: ast.Assign) -> List[SyntaxElement]:
+    """Parse an assignment.
+
+    :param ast_assign: An assign statement.
+    :type ast_assign: ast.Assign
+    :return: A list of syntax basic elements: one element per assignment target.
+    :rtype: List[SyntaxElement]
+    """
     result = []
     for target in ast_assign.targets:
         if type(target) == ast.Name:
@@ -151,7 +158,14 @@ def parse_ast_assign(ast_assign: ast.Assign) -> List[SyntaxElement]:
     return result
 
 
-def parse_ast_attribute(ast_attribute: ast.Attribute) -> Union[SyntaxElement, None]:
+def parse_ast_attribute(ast_attribute: ast.Attribute) -> Optional[SyntaxElement]:
+    """Parse an attribute into a basic syntax element.
+
+    :param ast_attribute: An attribute ast object.
+    :type ast_attribute: ast.Attribute
+    :return: A basic syntax element.
+    :rtype: Optional[SyntaxElement]
+    """
     if type(ast_attribute.value) == ast.Name:
         return parse_ast_name(ast_attribute.value, ast_attribute.attr)  # type: ignore
     if (
@@ -163,24 +177,55 @@ def parse_ast_attribute(ast_attribute: ast.Attribute) -> Union[SyntaxElement, No
 
 
 def parse_ast_name(
-    ast_name: ast.Name, called_attribute: str = None
-) -> Union[SyntaxElement, None]:
+    ast_name: ast.Name, called_attribute: Optional[str] = None
+) -> Optional[SyntaxElement]:
+    """Convert a `Name` ast object into a basic syntax element.
+
+    Depending on the context of the `ast.Name`,
+    the result can be a definition or a call.
+
+    :param ast_name: A syntax element representing a name.
+    :type ast_name: ast.Name
+    :param called_attribute: [description], defaults to None
+    :type called_attribute: Optional[str]
+    :return: [description]
+    :rtype: Optional[SyntaxElement]
+    """
     if type(ast_name.ctx) == ast.Load:
         return parse_loaded_ast_name(ast_name, called_attribute)
     if type(ast_name.ctx) == ast.Store:
-        if ast_name.id == ast_name.id.upper():
-            return parse_constant_definition(ast_name)
+        return parse_stored_ast_name(ast_name)
     return None
 
 
-def parse_constant_definition(ast_name: ast.Name) -> ConstantSyntaxElement:
-    return ConstantSyntaxElement(name=ast_name.id)
-
-
 def parse_loaded_ast_name(
-    ast_name: ast.Name, called_attribute: str = None
+    ast_name: ast.Name, called_attribute: Optional[str] = None
 ) -> CallSyntaxElement:
+    """Parse an `ast.Name`, whose context is `ast.Load` into a `CallSyntaxElement`.
+
+    :param ast_name: An `ast.Name`, whose context is `ast.Load`.
+    :type ast_name: ast.Name
+    :param called_attribute: The attribute defined in `ast.Attribute`, defaults to None
+    :type called_attribute: Optional[str]
+    :return: [description]
+    :rtype: CallSyntaxElement
+    """
     return CallSyntaxElement(
         what_reference_name=ast_name.id,
         called_attribute=called_attribute,
     )
+
+
+def parse_stored_ast_name(ast_name: ast.Name) -> Optional[ConstantSyntaxElement]:
+    """Parse an `ast.Name`, whose context is `ast.Store` into a `DefinitionSyntaxElement`.
+
+    The current version of this function supports only constant definitions.
+
+    :param ast_name: An `ast.Name`, whose context is `ast.Store`.
+    :type ast_name: ast.Name
+    :return: A constant definition if applicable.
+    :rtype: Optional[ConstantSyntaxElement]
+    """
+    if ast_name.id == ast_name.id.upper():
+        return ConstantSyntaxElement(name=ast_name.id)
+    return None

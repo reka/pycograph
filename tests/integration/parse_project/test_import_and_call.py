@@ -29,10 +29,9 @@ def other():
     )
 
     project = PythonProject(root_dir_path="dummy")
-    project.modules = [logic_module, importer_module]
     project._add_object(pkg)
-    project._add_object(logic_module)
-    project._add_object(importer_module)
+    project._add_module(logic_module)
+    project._add_module(importer_module)
 
     project.parse()
 

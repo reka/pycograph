@@ -12,6 +12,12 @@ app = typer.Typer()
 
 
 def version_callback(value: bool):
+    """A callback to provide the version option for the commands.
+
+    :param value: Shows whether the version option was provided.
+    :type value: bool
+    :raises typer.Exit: exit after showing the version number.
+    """
     if value:
         typer.echo(f"pycograph {__version__}")
         raise typer.Exit()
