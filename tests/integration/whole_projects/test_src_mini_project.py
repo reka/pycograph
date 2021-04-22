@@ -1,7 +1,11 @@
 import os
 
 from pycograph import pycograph
-from tests.integration.whole_projects.helpers import find_node_with_full_name
+from pycograph.schemas.parse_result import CONTAINS
+from tests.integration.whole_projects.helpers import (
+    assert_edge,
+    find_node_with_full_name,
+)
 
 
 def test_mini_project(test_data_dir, no_graph_commit):
@@ -39,12 +43,5 @@ def test_mini_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    package_contains_module_edge = result.edges[0]
-    assert package_contains_module_edge.relation == "contains"
-    assert package_contains_module_edge.src_node == mini_package_node
-    assert package_contains_module_edge.dest_node == example_module_node
-
-    module_contains_function_edge = result.edges[1]
-    assert module_contains_function_edge.relation == "contains"
-    assert module_contains_function_edge.src_node == example_module_node
-    assert module_contains_function_edge.dest_node == answer_function_node
+    assert_edge(mini_package_node, CONTAINS, example_module_node, result)
+    assert_edge(example_module_node, CONTAINS, answer_function_node, result)

@@ -1,7 +1,11 @@
 import os
 
 from pycograph import pycograph
-from tests.integration.whole_projects.helpers import find_node_with_full_name
+from pycograph.schemas.parse_result import CALLS, CONTAINS, IMPORTS
+from tests.integration.whole_projects.helpers import (
+    assert_edge,
+    find_node_with_full_name,
+)
 
 
 def test_duplo_project(test_data_dir, no_graph_commit):
@@ -79,45 +83,24 @@ def test_duplo_project(test_data_dir, no_graph_commit):
         "is_test_object": False,
     }
 
-    assert_contains_edge(duplo_package_node, content_module_node, result, 0)
-    assert_contains_edge(duplo_package_node, main_module_node, result, 1)
+    assert_edge(duplo_package_node, CONTAINS, content_module_node, result)
+    assert_edge(duplo_package_node, CONTAINS, main_module_node, result)
 
-    assert_contains_edge(content_module_node, answer_constant_node, result, 2)
-    assert_contains_edge(content_module_node, publ_function_node, result, 3)
-    assert_contains_edge(content_module_node, priv_function_node, result, 4)
-    assert_contains_edge(content_module_node, dummy_class_node, result, 5)
+    assert_edge(content_module_node, CONTAINS, answer_constant_node, result)
+    assert_edge(content_module_node, CONTAINS, publ_function_node, result)
+    assert_edge(content_module_node, CONTAINS, priv_function_node, result)
+    assert_edge(content_module_node, CONTAINS, dummy_class_node, result)
 
-    assert_contains_edge(main_module_node, bla_function_node, result, 6)
+    assert_edge(main_module_node, CONTAINS, bla_function_node, result)
 
-    assert_imports_edge(main_module_node, answer_constant_node, result, 7)
-    assert_imports_edge(main_module_node, dummy_class_node, result, 8)
-    assert_imports_edge(main_module_node, publ_function_node, result, 9)
+    assert_edge(main_module_node, IMPORTS, answer_constant_node, result)
+    assert_edge(main_module_node, IMPORTS, dummy_class_node, result)
+    assert_edge(main_module_node, IMPORTS, publ_function_node, result)
 
     # function call within module
-    assert_calls_edge(publ_function_node, priv_function_node, result, 10)
+    assert_edge(publ_function_node, CALLS, priv_function_node, result)
 
     # calling imported objects
-    assert_calls_edge(bla_function_node, answer_constant_node, result, 11)
-    assert_calls_edge(bla_function_node, dummy_class_node, result, 12)
-    assert_calls_edge(bla_function_node, publ_function_node, result, 13)
-
-
-def assert_contains_edge(src_node, dest_node, result, edge_index):
-    contains_edge = result.edges[edge_index]
-    assert contains_edge.relation == "contains"
-    assert contains_edge.src_node == src_node
-    assert contains_edge.dest_node == dest_node
-
-
-def assert_imports_edge(src_node, dest_node, result, edge_index):
-    imports_edge = result.edges[edge_index]
-    assert imports_edge.relation == "imports"
-    assert imports_edge.src_node == src_node
-    assert imports_edge.dest_node == dest_node
-
-
-def assert_calls_edge(src_node, dest_node, result, edge_index):
-    calls_edge = result.edges[edge_index]
-    assert calls_edge.relation == "calls"
-    assert calls_edge.src_node == src_node
-    assert calls_edge.dest_node == dest_node
+    assert_edge(bla_function_node, CALLS, answer_constant_node, result)
+    assert_edge(bla_function_node, CALLS, dummy_class_node, result)
+    assert_edge(bla_function_node, CALLS, publ_function_node, result)

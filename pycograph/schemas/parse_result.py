@@ -28,6 +28,10 @@ from pycograph.helpers.name_analyzer import determine_full_name_parts
 
 logger = logging.getLogger(__name__)
 
+CONTAINS = "contains"
+CALLS = "calls"
+IMPORTS = "imports"
+
 
 class Relationship(BaseModel, ABC):
     """Base class for all relationship classes.
@@ -47,13 +51,13 @@ class Relationship(BaseModel, ABC):
 class ContainsRelationship(Relationship):
     """Contains relationship between two objects."""
 
-    name: str = "contains"
+    name: str = CONTAINS
 
 
 class CallsRelationship(Relationship):
     """Calls relationship between two objects."""
 
-    name: str = "calls"
+    name: str = CALLS
     syntax_element: CallSyntaxElement
 
     def properties(self) -> Dict[str, Any]:
@@ -70,7 +74,7 @@ class ResolvedImportRelationship(Relationship):
     when we've figured out the full name of the imported object.
     """
 
-    name: str = "imports"
+    name: str = IMPORTS
     import_element: ImportSyntaxElement
 
     def properties(self) -> Dict[str, Any]:
