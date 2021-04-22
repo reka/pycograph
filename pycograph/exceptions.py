@@ -1,4 +1,4 @@
-"""Exceptions of Pycograph"""
+"""Exceptions of Pycograph."""
 
 
 class PycographException(Exception):

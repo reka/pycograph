@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+"""CLI for Pycograph."""
 
 from typing import Optional
 
@@ -12,7 +12,7 @@ app = typer.Typer()
 
 
 def version_callback(value: bool):
-    """A callback to provide the version option for the commands.
+    """Provide the version option for the commands.
 
     :param value: Shows whether the version option was provided.
     :type value: bool
@@ -29,9 +29,7 @@ def callback(
         None, "--version", callback=version_callback, is_eager=True
     ),
 ):
-    """
-    pycograph
-    """
+    """Main command."""
 
 
 @app.command()
@@ -50,9 +48,7 @@ def load(
         None, "--version", callback=version_callback, is_eager=True
     ),
 ):
-    """
-    Load a Python project's code into a graph model.
-    """
+    """Load a Python project's code into a graph model."""
     settings.overwrite_existing_graph = overwrite
     settings.determine_test_types = test_types
     if redis_host:

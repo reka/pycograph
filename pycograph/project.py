@@ -2,9 +2,9 @@
 
 import logging
 import os
-from pycograph.exceptions import ModuleWithInvalidContentException
 from typing import Dict, List, Optional
 
+from pycograph.exceptions import ModuleWithInvalidContentException
 from pycograph.schemas.basic_syntax_elements import (
     ABSOLUTE,
     ImportSyntaxElement,
@@ -29,7 +29,12 @@ class PythonProject:
     and resolves their references in the context of a project.
     """
 
-    def __init__(self, root_dir_path) -> None:
+    def __init__(self, root_dir_path: str) -> None:
+        """Initialize a project with a root dir path.
+
+        :param root_dir_path: The path of the project's root dir.
+        :type root_dir_path: str
+        """
         self.root_dir_path: str = root_dir_path
         self.modules: List[ModuleWithContext] = []
         self.objects: Dict[str, ObjectWithContext] = {}
