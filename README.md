@@ -2,6 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/pycograph.svg)](https://badge.fury.io/py/pycograph)
 ![Black](https://img.shields.io/badge/code%20style-black-000000.svg)
+[![codecov](https://codecov.io/gh/reka/pycograph/branch/main/graph/badge.svg?token=M1Y1SQRDHK)](https://codecov.io/gh/reka/pycograph)
+[![Pycograph](https://github.com/reka/pycograph/actions/workflows/pycograph.yaml/badge.svg)](https://github.com/reka/pycograph/actions/workflows/pycograph.yaml)
 
 ![Pycograph](https://github.com/reka/pycograph/raw/main/resources/pycograph_logo.png)
 
