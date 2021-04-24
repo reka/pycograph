@@ -38,6 +38,12 @@ def other():
     assert len(project.objects) == 5
 
     other_function_object = project.objects["package.importer.other"]
+    calls_do_stuff_rel = CallsRelationship(
+        destination_full_name="package.logic.do_stuff",
+        syntax_element=CallSyntaxElement(
+            what_reference_name="package", called_attribute="logic.do_stuff"
+        ),
+    )
     calls_logic_rel = CallsRelationship(
         destination_full_name="package.logic",
         syntax_element=CallSyntaxElement(
@@ -48,5 +54,8 @@ def other():
         destination_full_name="package",
         syntax_element=CallSyntaxElement(what_reference_name="package"),
     )
-    # Expected behavior: It should also find a call to package.logic.do_stuff
-    assert other_function_object.relationships == [calls_logic_rel, calls_package_rel]
+    assert other_function_object.relationships == [
+        calls_do_stuff_rel,
+        calls_logic_rel,
+        calls_package_rel,
+    ]

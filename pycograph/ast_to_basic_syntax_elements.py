@@ -115,9 +115,9 @@ def parse_function(ast_function_def: ast.FunctionDef) -> FunctionDefSyntaxElemen
     :rtype: FunctionDefSyntaxElement
     """
     function_def = FunctionDefSyntaxElement(name=ast_function_def.name)
-    for line in ast.walk(ast_function_def):
-        if type(line) != ast.FunctionDef:
-            function_def.add_syntax_elements(parse_ast_object(line))
+    for ast_obj in ast.walk(ast_function_def):
+        if type(ast_obj) != ast.FunctionDef:
+            function_def.add_syntax_elements(parse_ast_object(ast_obj))
     return function_def
 
 
@@ -158,7 +158,9 @@ def parse_ast_assign(ast_assign: ast.Assign) -> List[SyntaxElement]:
     return result
 
 
-def parse_ast_attribute(ast_attribute: ast.Attribute) -> Optional[SyntaxElement]:
+def parse_ast_attribute(
+    ast_attribute: ast.Attribute, passed_attribute: str = ""
+) -> Optional[SyntaxElement]:
     """Parse an attribute into a basic syntax element.
 
     :param ast_attribute: An attribute ast object.
@@ -166,13 +168,21 @@ def parse_ast_attribute(ast_attribute: ast.Attribute) -> Optional[SyntaxElement]
     :return: A basic syntax element.
     :rtype: Optional[SyntaxElement]
     """
+    if type(ast_attribute.ctx) != ast.Load:
+        return None
+    if passed_attribute:
+        called_attribute = f"{ast_attribute.attr}.{passed_attribute}"
+    else:
+        called_attribute = ast_attribute.attr
     if type(ast_attribute.value) == ast.Name:
-        return parse_ast_name(ast_attribute.value, ast_attribute.attr)  # type: ignore
+        return parse_ast_name(ast_attribute.value, called_attribute)  # type: ignore
     if (
         type(ast_attribute.value) == ast.Call
         and type(ast_attribute.value.func) == ast.Name  # type: ignore
     ):
-        return parse_ast_name(ast_attribute.value.func, ast_attribute.attr)  # type: ignore
+        return parse_ast_name(ast_attribute.value.func, called_attribute)  # type: ignore
+    if type(ast_attribute.value) == ast.Attribute:
+        return parse_ast_attribute(ast_attribute.value, called_attribute)  # type: ignore
     return None
 
 
