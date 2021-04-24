@@ -92,7 +92,6 @@ The following imports will be ignored by Pycograph:
 ### Calls
 
 * All the limitations of the imports.
-* Resolving longer calls of more than 2 levels.
 
 ### Other Known Limitations
 
