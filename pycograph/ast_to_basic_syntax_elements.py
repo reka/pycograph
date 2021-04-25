@@ -1,4 +1,4 @@
-"""Parse the abstract syntax tree of a Python project into basic syntax element objects."""
+"""Parse the abstract syntax tree of a Python project into basic syntax elements."""
 import ast
 from typing import List, Optional
 
@@ -171,18 +171,18 @@ def parse_ast_attribute(
     if type(ast_attribute.ctx) != ast.Load:
         return None
     if passed_attribute:
-        called_attribute = f"{ast_attribute.attr}.{passed_attribute}"
+        whole_attr = f"{ast_attribute.attr}.{passed_attribute}"
     else:
-        called_attribute = ast_attribute.attr
+        whole_attr = ast_attribute.attr
     if type(ast_attribute.value) == ast.Name:
-        return parse_ast_name(ast_attribute.value, called_attribute)  # type: ignore
+        return parse_ast_name(ast_attribute.value, whole_attr)  # type: ignore
     if (
         type(ast_attribute.value) == ast.Call
         and type(ast_attribute.value.func) == ast.Name  # type: ignore
     ):
-        return parse_ast_name(ast_attribute.value.func, called_attribute)  # type: ignore
+        return parse_ast_name(ast_attribute.value.func, whole_attr)  # type: ignore
     if type(ast_attribute.value) == ast.Attribute:
-        return parse_ast_attribute(ast_attribute.value, called_attribute)  # type: ignore
+        return parse_ast_attribute(ast_attribute.value, whole_attr)  # type: ignore
     return None
 
 

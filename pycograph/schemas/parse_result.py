@@ -137,8 +137,10 @@ class ObjectWithContext(BaseModel, ABC):
     ) -> Dict[str, "ObjectWithContext"]:
         """Parse the syntax elements in the context of this object.
 
-        If the syntax element defines an object => Store it and add it to the result dictionary.
-        If the syntax element represents a relationship => Store it for further processing.
+        If the syntax element defines an object
+        => Store it and add it to the result dictionary.
+        If the syntax element represents a relationship
+        => Store it for further processing.
 
         :return: All the syntax elements that represent an object.
         :rtype: Dict[str, ObjectWithContext]
@@ -216,7 +218,8 @@ class ObjectWithContext(BaseModel, ABC):
     def resolve_calls(self, imported_names: Dict[str, str]) -> None:
         """Resolve all call definitions recursively.
 
-        :param imported_names: A project-level dict showing which object an imported name refers to.
+        :param imported_names: A project-level dict showing which object an imported
+        name refers to.
         :type imported_names: Dict[str, str]
         """
         for call in self.calls:
@@ -231,7 +234,8 @@ class ObjectWithContext(BaseModel, ABC):
 
         :param call: A syntax element defining a calls relationship.
         :type call: CallSyntaxElement
-        :param imported_names: A project-level dict showing which object an imported name refers to.
+        :param imported_names: A project-level dict showing which object an imported
+        name refers to.
         :type imported_names: Dict[str, str]
         """
         if call.what_reference_name not in self.names_in_scope.keys():
@@ -314,7 +318,8 @@ class ModuleWithContext(ObjectWithContext):
         and stored in the caller (the project).
         All parsed elements are stored in the module itself as well.
 
-        :raises ModuleWithInvalidContentException: If the module contains invalid syntax.
+        :raises ModuleWithInvalidContentException: If the module contains invalid
+        syntax.
         :return: A dictionary of objects and their unique full names.
         :rtype: Dict[str, ObjectWithContext]
         """

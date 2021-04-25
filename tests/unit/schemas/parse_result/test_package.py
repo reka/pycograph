@@ -9,7 +9,7 @@ def test_package_production_code():
         dir_path="",
     )
 
-    assert package.is_test_object == False
+    assert package.is_test_object is False
     assert package.label() == "package"
 
 
@@ -20,7 +20,7 @@ def test_package_unit_test_no_determine_test_types():
         dir_path="",
     )
 
-    assert package.is_test_object == True
+    assert package.is_test_object is True
     assert package.test_type == ""
     assert package.label() == "test_package"
 
@@ -33,7 +33,7 @@ def test_package_unit():
         dir_path="",
     )
 
-    assert package.is_test_object == True
+    assert package.is_test_object is True
     assert package.test_type == "unit"
     assert package.label() == "test_package"
 
@@ -46,7 +46,7 @@ def test_main_unit_test_package():
         dir_path="",
     )
 
-    assert package.is_test_object == True
+    assert package.is_test_object is True
     assert package.test_type == "unit"
     assert package.label() == "test_package"
 
@@ -59,6 +59,6 @@ def test_main_test_package():
         dir_path="",
     )
 
-    assert package.is_test_object == True
+    assert package.is_test_object is True
     assert package.test_type == ""
     assert package.label() == "test_package"

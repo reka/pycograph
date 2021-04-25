@@ -147,7 +147,7 @@ class PythonProject:
             self.objects.update(added_objects)
 
     def _resolve_relationships(self) -> None:
-        """Go through all the modules and resolved the relationships in the context of the project.
+        """Resolve the relationships in the context of the project.
 
         The resolution steps have a strict order:
         1. Resolve the imports.
@@ -174,7 +174,7 @@ class PythonProject:
             modu.resolve_calls(self.imported_names)
 
     def _resolve_imports(self, modu: ModuleWithContext):
-        """Go through the unresolved imports in a module and try to resolve them in the project's context.
+        """Try to resolve a module's unresolved imports in the project's context.
 
         :param modu: The module whose imports are resolved.
         :type modu: ModuleWithContext
@@ -190,7 +190,7 @@ class PythonProject:
                 modu.unresolved_imports.append(imp_rel)
 
     def _resolve_import(
-        self, import_element: ImportSyntaxElement, module_full_name: str
+        self, import_elem: ImportSyntaxElement, module_full_name: str
     ) -> Optional[ObjectWithContext]:
         """Resolve which object an import syntax element is referring to.
 
@@ -201,18 +201,20 @@ class PythonProject:
         :return: The object the import syntax element is referring to.
         :rtype: Optional[ObjectWithContext]
         """
-        if import_element.reference_type() == ABSOLUTE:
-            imported_thing = self._find_by_full_name(import_element.what_full_name())
+        if import_elem.reference_type() == ABSOLUTE:
+            imported_thing = self._find_by_full_name(import_elem.what_full_name())
             if imported_thing:
                 return imported_thing
             # check the importer module's directory
             sibling_module_path = self._get_relative_imported_path(
-                module_full_name, import_element.what_full_name(), 1
+                module_full_name, import_elem.what_full_name(), 1
             )
             return self._find_by_full_name(sibling_module_path)
-        if import_element.reference_type() == RELATIVE:
+        if import_elem.reference_type() == RELATIVE:
             relative_import_path = self._get_relative_imported_path(
-                module_full_name, import_element.what_full_name(), import_element.level  # type: ignore
+                module_full_name,
+                import_elem.what_full_name(),
+                import_elem.level,  # type: ignore
             )
             return self._find_by_full_name(relative_import_path)
         return None
@@ -225,9 +227,11 @@ class PythonProject:
     ):
         """Process a resolved import.
 
-        * Add the name to the module's scope, so that it can be used when resolving the function calls.
+        * Add the name to the module's scope,
+        so that it can be used when resolving the function calls.
         * Create a `ResolvedImportRelationship` and add it to its module.
-        * Register the imported name in the project, so that it can be used when resolving the function calls.
+        * Register the imported name in the project,
+        so that it can be used when resolving the function calls.
 
         :param modu: The module where the import is located.
         :type modu: ModuleWithContext

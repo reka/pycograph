@@ -1,4 +1,3 @@
-from pycograph.schemas.basic_syntax_elements import ConstantSyntaxElement
 from pycograph.ast_to_basic_syntax_elements import parse_module
 from pycograph.schemas.basic_syntax_elements import ConstantSyntaxElement
 
