@@ -23,7 +23,8 @@ def populate_graph(graph_name: str, parse_result: ParseResult) -> Graph:
 
     :param graph_name: The name of the created graph.
     :type graph_name: str
-    :param parse_result: A parsed Python project with objects representing the nodes of the graph.
+    :param parse_result: A parsed Python project with objects representing the nodes of
+    the graph.
     :type parse_result: ParseResult
     :raises RedisConnectionException: [description]
     :return: [description]
@@ -58,8 +59,10 @@ def _commit_graph(redis_graph: Graph) -> None:
     :param redis_graph: The graph to be committed.
     :type redis_graph: Graph
     :raises RedisConnectionException: If we can't connect to a Redis instance.
-    :raises RedisWithoutGraphException: If the Redis instance doesn't support the GRAPH command.
-    :raises RedisResponseException: If the Redis library threw an unclassified ResponseError.
+    :raises RedisWithoutGraphException: If the Redis instance doesn't support the
+    GRAPH command.
+    :raises RedisResponseException: If the Redis library threw an unclassified
+    ResponseError.
     """
     try:
         redis_graph.commit()
@@ -69,9 +72,11 @@ def _commit_graph(redis_graph: Graph) -> None:
         ) from e
     except redis.exceptions.ResponseError as e:
         if str(e).startswith("unknown command `GRAPH.QUERY`"):
-            raise RedisWithoutGraphException(
-                "You're connected to a Redis instance, which doesn't support GRAPH commands."
-            ) from e
+            msg = (
+                "You're connected to a Redis instance, "
+                "which doesn't support GRAPH commands."
+            )
+            raise RedisWithoutGraphException(msg) from e
         else:
             raise RedisResponseException from e
 

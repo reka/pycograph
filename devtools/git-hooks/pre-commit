@@ -8,6 +8,7 @@
 # ln -s ../../devtools/git-hooks/pre-commit
 
 black .
+flake8
 mypy pycograph
 make cov
 
