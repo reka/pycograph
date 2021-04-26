@@ -34,8 +34,8 @@ def callback(
 
 @app.command()
 def load(
-    project_dir: str = "",
-    graph_name: str = "",
+    project_dir: Optional[str] = None,
+    graph_name: Optional[str] = None,
     overwrite: bool = typer.Option(
         False, help="If a graph with this name already exists, delete it."
     ),
