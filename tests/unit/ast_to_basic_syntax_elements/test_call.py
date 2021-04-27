@@ -5,6 +5,15 @@ from pycograph.schemas.basic_syntax_elements import (
 from pycograph.ast_to_basic_syntax_elements import parse_module
 
 
+def test_call_directly_in_a_module():
+    function_call_code = "dumbo()"
+
+    result = parse_module(function_call_code, "module_name")
+
+    dumbo_call = CallSyntaxElement(what_reference_name="dumbo")
+    assert result == [dumbo_call]
+
+
 def test_call_in_a_function():
     function_call_code = """
 def dummy_func():
@@ -15,10 +24,8 @@ def dummy_func():
     assert len(result) == 1
     function_def = result[0]
     assert type(function_def) == FunctionDefSyntaxElement
-    call = function_def.syntax_elements[0]
-    assert type(call) == CallSyntaxElement
-    assert call.what_reference_name == "dumbo"
-    assert call.called_attribute is None
+    dumbo_call = CallSyntaxElement(what_reference_name="dumbo")
+    assert function_def.syntax_elements == [dumbo_call]
 
 
 def test_nested_call_in_a_function():
@@ -31,11 +38,22 @@ def dummy_func():
     assert len(result) == 1
     function_def = result[0]
     assert type(function_def) == FunctionDefSyntaxElement
-    dumbo_call = function_def.syntax_elements[0]
-    assert type(dumbo_call) == CallSyntaxElement
-    assert dumbo_call.what_reference_name == "dumbo"
-    assert dumbo_call.called_attribute is None
-    other_call = function_def.syntax_elements[1]
-    assert type(other_call) == CallSyntaxElement
-    assert other_call.what_reference_name == "other"
-    assert other_call.called_attribute is None
+    dumbo_call = CallSyntaxElement(what_reference_name="dumbo")
+    other_call = CallSyntaxElement(what_reference_name="other")
+    assert function_def.syntax_elements == [dumbo_call, other_call]
+
+
+def test_call_with_attribute():
+    function_call_code = """
+def dummy_func():
+    obj.dummy()
+"""
+
+    result = parse_module(function_call_code, "module_name")
+
+    assert len(result) == 1
+    function_def = result[0]
+    assert type(function_def) == FunctionDefSyntaxElement
+    call_dummy = CallSyntaxElement(what_reference_name="obj", called_attribute="dummy")
+    call_obj = CallSyntaxElement(what_reference_name="obj")
+    assert function_def.syntax_elements == [call_dummy, call_obj]

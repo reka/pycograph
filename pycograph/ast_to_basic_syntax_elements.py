@@ -58,6 +58,10 @@ def parse_ast_object(ast_object: ast.AST) -> List[SyntaxElement]:
         result = parse_ast_attribute(ast_object)  # type: ignore
         if result:
             return [result]
+    if type(ast_object) == ast.Expr:
+        result = parse_ast_expr(ast_object)  # type: ignore
+        if result:
+            return [result]
     if type(ast_object) == ast.Name:
         result = parse_ast_name(ast_object)  # type: ignore
         if result:
@@ -116,7 +120,8 @@ def parse_function(ast_function_def: ast.FunctionDef) -> FunctionDefSyntaxElemen
     """
     function_def = FunctionDefSyntaxElement(name=ast_function_def.name)
     for ast_obj in ast.walk(ast_function_def):
-        if type(ast_obj) != ast.FunctionDef:
+        # parsing ast.Expr was added only to detect function calls directly in a module.
+        if type(ast_obj) not in [ast.FunctionDef, ast.Expr]:
             function_def.add_syntax_elements(parse_ast_object(ast_obj))
     return function_def
 
@@ -183,6 +188,24 @@ def parse_ast_attribute(
         return parse_ast_name(ast_attribute.value.func, whole_attr)  # type: ignore
     if type(ast_attribute.value) == ast.Attribute:
         return parse_ast_attribute(ast_attribute.value, whole_attr)  # type: ignore
+    return None
+
+
+def parse_ast_expr(ast_expression: ast.Expr) -> Optional[SyntaxElement]:
+    """Parse an attribute into a basic syntax element.
+
+    :param ast_attribute: An attribute ast object.
+    :type ast_attribute: ast.Attribute
+    :return: A basic syntax element.
+    :rtype: Optional[SyntaxElement]
+    """
+    if type(ast_expression.value) == ast.Name:
+        return parse_ast_name(ast_expression.value)  # type: ignore
+    if (
+        type(ast_expression.value) == ast.Call
+        and type(ast_expression.value.func) == ast.Name  # type: ignore
+    ):
+        return parse_ast_name(ast_expression.value.func)  # type: ignore
     return None
 
 
