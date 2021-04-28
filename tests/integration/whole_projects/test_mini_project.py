@@ -1,6 +1,7 @@
 import os
 
 from pycograph import pycograph
+from pycograph.schemas.pycograph_input import PycographLoadInput
 from pycograph.schemas.parse_result import CONTAINS
 from tests.integration.whole_projects.helpers import (
     assert_edge,
@@ -11,7 +12,7 @@ from tests.integration.whole_projects.helpers import (
 def test_mini_project(test_data_dir, no_graph_commit):
     mini_project_path = os.path.join(test_data_dir, "mini-project")
 
-    result = pycograph.load(mini_project_path)
+    result = pycograph.load(PycographLoadInput(project_dir_path=mini_project_path))
 
     assert result.name == "mini-project"
     assert len(result.nodes) == 3
