@@ -4,6 +4,7 @@ from typing import Optional
 
 from redisgraph.graph import Graph  # type: ignore
 
+from pycograph.exceptions import InvalidProjectDirPathException
 from pycograph.parse_result_to_redisgraph import populate_graph
 from pycograph.project import PythonProject
 
@@ -20,6 +21,10 @@ def load(project_dir_path: Optional[str], graph_name: Optional[str] = None) -> G
     """
     if not project_dir_path:
         project_dir_path = os.getcwd()
+    if not os.path.isdir(project_dir_path):
+        raise InvalidProjectDirPathException(
+            f"Could not find the project dir: {project_dir_path}."
+        )
     if not graph_name:
         graph_name = os.path.split(project_dir_path)[-1]
     project = PythonProject(root_dir_path=project_dir_path)
