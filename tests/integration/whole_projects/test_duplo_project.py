@@ -1,6 +1,7 @@
 import os
 
 from pycograph import pycograph
+from pycograph.schemas.pycograph_input import PycographLoadInput
 from pycograph.schemas.parse_result import CALLS, CONTAINS, IMPORTS
 from tests.integration.whole_projects.helpers import (
     assert_edge,
@@ -11,7 +12,7 @@ from tests.integration.whole_projects.helpers import (
 def test_duplo_project(test_data_dir, no_graph_commit):
     duplo_project_path = os.path.join(test_data_dir, "duplo-project")
 
-    result = pycograph.load(duplo_project_path)
+    result = pycograph.load(PycographLoadInput(project_dir_path=duplo_project_path))
 
     assert result.name == "duplo-project"
     assert len(result.nodes) == 8

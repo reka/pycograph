@@ -1,5 +1,6 @@
 """CLI for Pycograph."""
 
+from pycograph.schemas.pycograph_input import PycographLoadInput
 from typing import Optional
 
 import typer
@@ -56,7 +57,10 @@ def load(
     if redis_port:
         settings.redis_port = redis_port
     try:
-        redis_graph = pycograph.load(project_dir, graph_name)
+        load_input = PycographLoadInput(
+            project_dir_path=project_dir, graph_name=graph_name
+        )
+        redis_graph = pycograph.load(load_input)
     except PycographException as e:
         typer.echo(e, err=True)
         return
