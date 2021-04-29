@@ -5,8 +5,8 @@ class PycographException(Exception):
     """The base exception class. Specific exception classes should inherit from this."""
 
 
-class InvalidProjectDirPathException(PycographException):
-    """The project dir path provided is invalid."""
+class NoPythonFileFoundException(PycographException):
+    """No Python files found in the project dir."""
 
 
 class RedisConnectionException(PycographException):

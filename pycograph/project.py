@@ -4,7 +4,10 @@ import logging
 import os
 from typing import Dict, List, Optional
 
-from pycograph.exceptions import ModuleWithInvalidContentException
+from pycograph.exceptions import (
+    ModuleWithInvalidContentException,
+    NoPythonFileFoundException,
+)
 from pycograph.schemas.basic_syntax_elements import (
     ABSOLUTE,
     ImportSyntaxElement,
@@ -73,6 +76,9 @@ class PythonProject:
                     if not current_package:
                         current_package = self._add_package(current_dir)
                     self._add_module_to_package(current_package, name_content)
+
+        if len(self.modules) == 0:
+            raise NoPythonFileFoundException()
 
     def _add_object(self, obj: ObjectWithContext) -> None:
         """Add an object to the internal object collection.
