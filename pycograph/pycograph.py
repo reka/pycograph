@@ -9,10 +9,8 @@ from pycograph.schemas.pycograph_input import PycographLoadInput
 def load(load_input: PycographLoadInput) -> Graph:
     """Load a Python project's code into a graph model.
 
-    :param project_dir_path: The path of the Python project.
-    :type project_dir_path: Optional[str]
-    :param graph_name: the name of the graph, defaults to None
-    :type graph_name: Optional[str]
+    :param load_input: An object containing the input data.
+    :type load_input: PycographLoadInput
     :return: A RedisGraph graph with the parsed Python project.
     :rtype: Graph
     """
