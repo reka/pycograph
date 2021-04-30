@@ -1,8 +1,8 @@
+from pycograph.ast_to_basic_syntax_elements import parse_module
 from pycograph.schemas.basic_syntax_elements import (
     ClassDefSyntaxElement,
     FunctionDefSyntaxElement,
 )
-from pycograph.ast_to_basic_syntax_elements import parse_module
 
 
 def test_function_in_module():

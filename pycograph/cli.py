@@ -1,6 +1,5 @@
 """CLI for Pycograph."""
 
-from pycograph.schemas.pycograph_input import PycographLoadInput
 from typing import Optional
 
 import typer
@@ -8,6 +7,7 @@ import typer
 from pycograph import __version__, pycograph
 from pycograph.config import settings
 from pycograph.exceptions import PycographException
+from pycograph.schemas.pycograph_input import PycographLoadInput
 
 app = typer.Typer()
 

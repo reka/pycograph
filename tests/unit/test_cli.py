@@ -1,7 +1,7 @@
 import os
-from typer.testing import CliRunner
 
 import pytest
+from typer.testing import CliRunner
 
 from pycograph import __version__
 from pycograph.cli import app

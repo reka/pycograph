@@ -7,9 +7,9 @@ from pycograph.schemas.basic_syntax_elements import (
     ClassDefSyntaxElement,
     ConstantSyntaxElement,
     FunctionDefSyntaxElement,
+    ImportFromSyntaxElement,
     ImportSyntaxElement,
     SyntaxElement,
-    ImportFromSyntaxElement,
 )
 
 

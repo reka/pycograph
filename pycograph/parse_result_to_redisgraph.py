@@ -11,11 +11,7 @@ from pycograph.exceptions import (
     RedisResponseException,
     RedisWithoutGraphException,
 )
-from pycograph.schemas.parse_result import (
-    ParseResult,
-    Relationship,
-    ObjectWithContext,
-)
+from pycograph.schemas.parse_result import ObjectWithContext, ParseResult, Relationship
 
 
 def populate_graph(graph_name: str, parse_result: ParseResult) -> Graph:

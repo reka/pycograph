@@ -1,10 +1,11 @@
-from ..helper import create_module_with_content
 from pycograph.project import PythonProject
 from pycograph.schemas.basic_syntax_elements import ImportSyntaxElement
 from pycograph.schemas.parse_result import (
     PackageWithContext,
     ResolvedImportRelationship,
 )
+
+from ..helper import create_module_with_content
 
 
 def test_import_one_name():

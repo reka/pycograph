@@ -3,28 +3,27 @@
 They contain contextual information and methods with logic.
 """
 
-from abc import ABC, abstractmethod
 import logging
 import os
-from pycograph.exceptions import ModuleWithInvalidContentException
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel
 
 from pycograph.ast_to_basic_syntax_elements import parse_module
+from pycograph.config import settings
+from pycograph.exceptions import ModuleWithInvalidContentException
+from pycograph.helpers.name_analyzer import determine_full_name_parts
 from pycograph.schemas.basic_syntax_elements import (
     BlockSyntaxElement,
     CallSyntaxElement,
     ClassDefSyntaxElement,
     ConstantSyntaxElement,
     FunctionDefSyntaxElement,
-    ImportSyntaxElement,
     ImportFromSyntaxElement,
+    ImportSyntaxElement,
     SyntaxElement,
 )
-
-from pycograph.config import settings
-from pycograph.helpers.name_analyzer import determine_full_name_parts
 
 logger = logging.getLogger(__name__)
 

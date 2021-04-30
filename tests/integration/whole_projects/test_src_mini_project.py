@@ -1,8 +1,8 @@
 import os
 
 from pycograph import pycograph
-from pycograph.schemas.pycograph_input import PycographLoadInput
 from pycograph.schemas.parse_result import CONTAINS
+from pycograph.schemas.pycograph_input import PycographLoadInput
 from tests.integration.whole_projects.helpers import (
     assert_edge,
     find_node_with_full_name,

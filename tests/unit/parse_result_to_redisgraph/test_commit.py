@@ -1,5 +1,4 @@
 import pytest
-
 import redis.exceptions
 from redisgraph.graph import Graph
 
