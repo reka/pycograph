@@ -7,6 +7,7 @@
 # cd .git/hooks
 # ln -s ../../devtools/git-hooks/pre-commit
 
+isort .
 black .
 flake8
 mypy pycograph
