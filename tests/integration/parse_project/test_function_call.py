@@ -1,10 +1,11 @@
+import pytest
+
 from pycograph.schemas.basic_syntax_elements import CallSyntaxElement
 from pycograph.schemas.parse_result import (
     CallsRelationship,
     ContainsRelationship,
     ModuleWithContext,
 )
-import pytest
 
 REFERENCE_OTHER_FUNCTION = """
 def do_stuff(nr):

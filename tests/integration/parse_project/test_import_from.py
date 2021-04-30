@@ -1,7 +1,8 @@
-from ..helper import create_module_with_content
 from pycograph.project import PythonProject
 from pycograph.schemas.basic_syntax_elements import ImportFromSyntaxElement
 from pycograph.schemas.parse_result import ResolvedImportRelationship
+
+from ..helper import create_module_with_content
 
 
 def test_import_from_one_name():

@@ -1,8 +1,8 @@
 import pytest
 
 from pycograph.schemas.parse_result import (
-    ContainsRelationship,
     ConstantWithContext,
+    ContainsRelationship,
     ModuleWithContext,
 )
 

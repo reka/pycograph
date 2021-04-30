@@ -10,13 +10,13 @@ from pycograph.exceptions import (
 )
 from pycograph.schemas.basic_syntax_elements import (
     ABSOLUTE,
-    ImportSyntaxElement,
     RELATIVE,
+    ImportSyntaxElement,
 )
 from pycograph.schemas.parse_result import (
     ModuleWithContext,
-    PackageWithContext,
     ObjectWithContext,
+    PackageWithContext,
     ParseResult,
     ResolvedImportRelationship,
 )

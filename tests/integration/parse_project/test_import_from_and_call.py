@@ -1,6 +1,7 @@
 from pycograph.project import PythonProject
 from pycograph.schemas.basic_syntax_elements import CallSyntaxElement
 from pycograph.schemas.parse_result import CallsRelationship
+
 from ..helper import create_module_with_content
 
 
