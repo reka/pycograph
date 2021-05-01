@@ -33,6 +33,9 @@ jobs:
     - name: Install application and dependencies
       run: python -m poetry install
 
+    - name: isort
+      run: python -m poetry run isort -c .
+
     - name: Lint with flake8
       run: python -m poetry run flake8
 
