@@ -36,6 +36,9 @@ jobs:
     - name: isort
       run: python -m poetry run isort -c .
 
+    - name: black 
+      run: python -m poetry run black --check .
+
     - name: Lint with flake8
       run: python -m poetry run flake8
 
