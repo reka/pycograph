@@ -57,7 +57,7 @@ There are 3 levels of tests:
 * integration
 * integration tests based on a sample project in the `test_data` directory
 
-The current code coverage is 88%.  
+The current code coverage target is 90%.  
 Each new feature should contain some unit or integration tests.
 
 ## Code Conventions
