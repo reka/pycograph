@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.12] - 2021-05-01
+### Added
+
+* basic support for function call directly in a module
+* error handling: invalid project dir, no .py file in the project dir
+* add isort incl. GitHub action
+* Black version update and GitHub action
+* coverage: add target 90%
+
+## [0.2.11] - 2021-04-25
+### Added
+
+* add flake8 incl. GitHub action
+* fix errors found by flake8
+
 ## [0.2.10] - 2021-04-24
 ### Added
 
