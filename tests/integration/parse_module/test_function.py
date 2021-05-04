@@ -1,6 +1,4 @@
-import pytest
-
-from pycograph.schemas.parse_result import ConstantWithContext, FunctionWithContext
+from pycograph.schemas.parse_result import FunctionWithContext
 from tests.integration.helper import create_module_with_content
 
 
