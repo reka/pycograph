@@ -11,6 +11,11 @@ def test_package_production_code():
 
     assert package.is_test_object is False
     assert package.label() == "package"
+    assert package.node_properties() == {
+        "name": "example",
+        "full_name": "example",
+        "is_test_object": False,
+    }
 
 
 def test_package_unit_test_no_determine_test_types():
@@ -23,6 +28,11 @@ def test_package_unit_test_no_determine_test_types():
     assert package.is_test_object is True
     assert package.test_type == ""
     assert package.label() == "test_package"
+    assert package.node_properties() == {
+        "name": "tests.unit.cli",
+        "full_name": "tests.unit.cli",
+        "is_test_object": True,
+    }
 
 
 def test_package_unit():
@@ -36,6 +46,12 @@ def test_package_unit():
     assert package.is_test_object is True
     assert package.test_type == "unit"
     assert package.label() == "test_package"
+    assert package.node_properties() == {
+        "name": "tests.unit.cli",
+        "full_name": "tests.unit.cli",
+        "is_test_object": True,
+        "test_type": "unit",
+    }
 
 
 def test_main_unit_test_package():
@@ -49,6 +65,12 @@ def test_main_unit_test_package():
     assert package.is_test_object is True
     assert package.test_type == "unit"
     assert package.label() == "test_package"
+    assert package.node_properties() == {
+        "name": "tests.unit",
+        "full_name": "tests.unit",
+        "is_test_object": True,
+        "test_type": "unit",
+    }
 
 
 def test_main_test_package():
@@ -62,3 +84,9 @@ def test_main_test_package():
     assert package.is_test_object is True
     assert package.test_type == ""
     assert package.label() == "test_package"
+    assert package.node_properties() == {
+        "name": "tests",
+        "full_name": "tests",
+        "is_test_object": True,
+        "test_type": "",
+    }
