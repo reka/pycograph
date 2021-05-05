@@ -5,6 +5,7 @@
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![codecov](https://codecov.io/gh/reka/pycograph/branch/main/graph/badge.svg?token=M1Y1SQRDHK)](https://codecov.io/gh/reka/pycograph)
 [![Pycograph](https://github.com/reka/pycograph/actions/workflows/pycograph.yaml/badge.svg)](https://github.com/reka/pycograph/actions/workflows/pycograph.yaml)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/reka/pycograph.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/reka/pycograph/context:python)
 
 ![Pycograph](https://github.com/reka/pycograph/raw/main/resources/pycograph_logo.png)
 
