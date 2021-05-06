@@ -1,5 +1,5 @@
 from pycograph.project import PythonProject
-from pycograph.schemas.basic_syntax_elements import ImportSyntaxElement
+from pycograph.schemas.basic_syntax_elements import ABSOLUTE, ImportSyntaxElement
 from pycograph.schemas.parse_result import (
     PackageWithContext,
     ResolvedImportRelationship,
@@ -44,5 +44,10 @@ def do_stuff(nr):
             name="package",
         ),
     )
+    assert imports_do_stuff_rel.properties() == {
+        "name": "package",
+        "as_name": "",
+        "reference_type": ABSOLUTE,
+    }
     assert importer_module_object.relationships == [imports_do_stuff_rel]
     assert importer_module_object.names_in_scope["package"] == "package"
