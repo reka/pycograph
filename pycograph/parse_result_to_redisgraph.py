@@ -73,8 +73,7 @@ def _commit_graph(redis_graph: Graph) -> None:
                 "which doesn't support GRAPH commands."
             )
             raise RedisWithoutGraphException(msg) from e
-        else:
-            raise RedisResponseException from e
+        raise RedisResponseException from e
 
 
 def _add_node_to_graph(obj: ObjectWithContext, graph: Graph) -> Node:

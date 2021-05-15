@@ -16,7 +16,4 @@ def load(load_input: PycographLoadInput) -> Graph:
     """
     project = PythonProject(root_dir_path=load_input.project_dir_path)  # type: ignore
     project_parse_result = project.parse()
-    redis_graph = populate_graph(
-        load_input.graph_name, project_parse_result  # type: ignore
-    )
-    return redis_graph
+    return populate_graph(load_input.graph_name, project_parse_result)  # type: ignore

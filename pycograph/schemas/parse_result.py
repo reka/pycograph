@@ -244,7 +244,7 @@ class ObjectWithContext(BaseModel, ABC):
             what_full_name = f"{called_full_name}.{call.called_attribute}"
         else:
             what_full_name = called_full_name
-        if what_full_name in imported_names.keys():
+        if what_full_name in imported_names:
             what_full_name = imported_names[what_full_name]
         calls_rel = CallsRelationship(
             destination_full_name=what_full_name, syntax_element=call
@@ -325,8 +325,7 @@ class ModuleWithContext(ObjectWithContext):
         self._read_content()
         try:
             syntax_elements = parse_module(self.content, self.full_name)
-            result = self._parse_syntax_elements(syntax_elements)
-            return result
+            return self._parse_syntax_elements(syntax_elements)
         except SyntaxError as e:
             raise ModuleWithInvalidContentException from e
 

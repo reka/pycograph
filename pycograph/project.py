@@ -165,7 +165,7 @@ class PythonProject:
         # In case an import is referencing an imported name.
         # Currently, we have 3 rounds hard-coded.
         # An alternative would be to loop until we find new imports to resolve.
-        for _ in range(0, 3):
+        for _ in range(3):
             for modu in self.modules:
                 self._resolve_imports(modu)
 
