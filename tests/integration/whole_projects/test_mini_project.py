@@ -3,11 +3,7 @@ import os
 from pycograph import pycograph
 from pycograph.schemas.parse_result import CONTAINS
 from pycograph.schemas.pycograph_input import PycographLoadInput
-from tests.integration.whole_projects.helpers import (
-    assert_edge,
-    assert_node,
-    find_node_with_full_name,
-)
+from tests.integration.whole_projects.helpers import assert_edge, assert_node
 
 
 def test_mini_project(test_data_dir, no_graph_commit):
