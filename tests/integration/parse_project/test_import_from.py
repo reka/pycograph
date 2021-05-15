@@ -97,24 +97,23 @@ def do_stuff(nr):
     project.parse()
 
     assert len(project.objects) == 4
-    first_importer_module_object = project.objects["package.first_importer"]
+    assert_imports_do_stuff(
+        project, importer_module="package.first_importer", from_text="package.logic"
+    )
+    assert_imports_do_stuff(
+        project,
+        importer_module="package.second_importer",
+        from_text="package.first_importer",
+    )
+
+
+def assert_imports_do_stuff(project, importer_module, from_text):
+    importer_module_object = project.objects[importer_module]
     imports_do_stuff_rel = ResolvedImportRelationship(
         destination_full_name="package.logic.do_stuff",
         import_element=ImportFromSyntaxElement(
-            from_text="package.logic",
-            name="do_stuff",
-            level=0,
+            from_text=from_text, name="do_stuff", level=0
         ),
     )
-    assert first_importer_module_object.relationships == [imports_do_stuff_rel]
 
-    second_importer_module_object = project.objects["package.second_importer"]
-    second_imports_do_stuff_rel = ResolvedImportRelationship(
-        destination_full_name="package.logic.do_stuff",
-        import_element=ImportFromSyntaxElement(
-            from_text="package.first_importer",
-            name="do_stuff",
-            level=0,
-        ),
-    )
-    assert second_importer_module_object.relationships == [second_imports_do_stuff_rel]
+    assert importer_module_object.relationships == [imports_do_stuff_rel]

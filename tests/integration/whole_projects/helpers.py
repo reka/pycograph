@@ -3,6 +3,20 @@ from typing import List
 from redisgraph.node import Node
 
 
+def assert_node(
+    nodes, label: str, name: str, full_name: str, is_test_object: bool = False
+):
+    result = find_node_with_full_name(full_name, nodes)
+    assert result.label == label
+    assert result.properties == {
+        "name": name,
+        "full_name": full_name,
+        "is_test_object": is_test_object,
+    }
+
+    return result
+
+
 def find_node_with_full_name(full_name: str, nodes: List[Node]):
     nodes_with_name = list(
         filter(lambda n: n.properties["full_name"] == full_name, nodes)
