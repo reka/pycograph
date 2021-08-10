@@ -10,7 +10,8 @@
 ![Pycograph](https://github.com/reka/pycograph/raw/main/resources/pycograph_logo.png)
 
 Homepage: [https://pycograph.com/](https://pycograph.com/)  
-PyPI: [https://pypi.org/project/pycograph/](https://pypi.org/project/pycograph/)
+PyPI: [https://pypi.org/project/pycograph/](https://pypi.org/project/pycograph/)  
+RedisConf 2021 [talk](https://www.youtube.com/watch?v=pE3cg6jK2Zg)
 
 **Explore your Python code with graph queries**
 

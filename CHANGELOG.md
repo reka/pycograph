@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-08-10
+### Added
+
+* basic support for function call directly in a module
+* test for the current limitation: no syntax element for assigning value to an attribute
+* whole_project tests: introduce assert_node test helper function
+* various further test cases
+
+### Changed
+
+* redis_graph.commit(): improve error handling
+* increased coverage target: 94%
+* syntax changes suggested by Sourcery
+
 ## [0.2.12] - 2021-05-01
 ### Added
 
