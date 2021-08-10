@@ -57,3 +57,20 @@ def dummy_func():
     call_dummy = CallSyntaxElement(what_reference_name="obj", called_attribute="dummy")
     call_obj = CallSyntaxElement(what_reference_name="obj")
     assert function_def.syntax_elements == [call_dummy, call_obj]
+
+
+def test_assigning_value_to_an_attribute():
+    function_call_code = """
+def dummy_func():
+    obj.dummy = 42
+"""
+
+    result = parse_module(function_call_code, "module_name")
+
+    assert len(result) == 1
+    function_def = result[0]
+    assert type(function_def) == FunctionDefSyntaxElement
+    # Current limitation:
+    # We only create a call for obj, but nothing for dummy!!
+    call_obj = CallSyntaxElement(what_reference_name="obj")
+    assert function_def.syntax_elements == [call_obj]
